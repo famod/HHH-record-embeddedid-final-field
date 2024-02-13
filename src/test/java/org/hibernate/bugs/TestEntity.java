@@ -12,9 +12,6 @@ public class TestEntity {
     @EmbeddedId
     private TestEntityId id;
 
-    @Column
-    private String foo;
-
     @OneToOne(cascade = CascadeType.ALL)
     private TestReferencedEntity referenced;
 
@@ -24,14 +21,6 @@ public class TestEntity {
 
     public void setId(TestEntityId id) {
         this.id = id;
-    }
-
-    public String getFoo() {
-        return foo;
-    }
-
-    public void setFoo(String foo) {
-        this.foo = foo;
     }
 
     public TestReferencedEntity getReferenced() {

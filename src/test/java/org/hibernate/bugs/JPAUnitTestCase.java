@@ -38,7 +38,6 @@ public class JPAUnitTestCase {
 		        return null;
 		    });
 		    TestEntity loadedEntity = withTx(entityManager, em -> em.find(TestEntity.class, id));
-		    loadedEntity.setFoo("modified");
             TestReferencedEntity referenced = new TestReferencedEntity();
             referenced.setId(referencedId);
             loadedEntity.setReferenced(referenced);
@@ -58,7 +57,6 @@ public class JPAUnitTestCase {
                 TestEntity entity = new TestEntity();
                 entity.setId(id);
                 em.persist(entity);
-                entity.setFoo("modified");
                 TestReferencedEntity referenced = new TestReferencedEntity();
                 referenced.setId(referencedId);
                 entity.setReferenced(referenced);

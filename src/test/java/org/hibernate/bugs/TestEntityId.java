@@ -15,8 +15,4 @@ public record TestEntityId(
         @Basic
         @JdbcTypeCode(Types.CHAR)
         UUID id) {
-
-    public UUID getId() {
-        return id;
-    }
 }
