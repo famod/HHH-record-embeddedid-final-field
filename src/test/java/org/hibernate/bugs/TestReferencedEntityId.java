@@ -10,7 +10,7 @@ import jakarta.persistence.Embeddable;
 import org.hibernate.annotations.JdbcTypeCode;
 
 @Embeddable
-public record TestEntityId(
+public record TestReferencedEntityId(
         @Column(name = "id", updatable = false, nullable = false, columnDefinition = "CHAR(36)")
         @Basic
         @JdbcTypeCode(Types.CHAR)

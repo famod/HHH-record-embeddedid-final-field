@@ -5,7 +5,7 @@
 	<groupId>org.hibernate.testcasetemplate</groupId>
 	<artifactId>test-case-template-hibernate-orm-6</artifactId>
 	<version>1.0.0.Final</version>
-	<name>Hibernate ORM 6 Test Case Template</name>
+	<name>Showcase for https://hibernate.atlassian.net/browse/HHH-17730</name>
 
 	<properties>
 		<version.com.h2database>2.2.224</version.com.h2database>

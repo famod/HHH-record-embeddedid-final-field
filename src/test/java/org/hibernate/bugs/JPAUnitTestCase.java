@@ -1,7 +1,6 @@
 package org.hibernate.bugs;
 
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import jakarta.persistence.EntityManager;
@@ -12,9 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * This template demonstrates how to develop a test case for Hibernate ORM, using the Java Persistence API.
- */
 public class JPAUnitTestCase {
 
 	private EntityManagerFactory entityManagerFactory;
@@ -28,14 +24,13 @@ public class JPAUnitTestCase {
 	public void destroy() {
 		entityManagerFactory.close();
 	}
-
-	// Entities are auto-discovered, so just add them anywhere on class-path
-	// Add your tests, using standard JUnit.
+	
 	@Test
-	public void hhh123Test() throws Exception {
+	public void multiTx() throws Exception {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		try {
 		    TestEntityId id = new TestEntityId(UUID.randomUUID());
+		    TestReferencedEntityId referencedId = new TestReferencedEntityId(UUID.randomUUID());
 		    withTx(entityManager, em -> {
 		        TestEntity entity = new TestEntity();
 		        entity.setId(id);
@@ -44,22 +39,36 @@ public class JPAUnitTestCase {
 		    });
 		    TestEntity loadedEntity = withTx(entityManager, em -> em.find(TestEntity.class, id));
 		    loadedEntity.setFoo("modified");
+            TestReferencedEntity referenced = new TestReferencedEntity();
+            referenced.setId(referencedId);
+            loadedEntity.setReferenced(referenced);
 		    TestEntity mergedEntity = withTx(entityManager, em -> em.merge(loadedEntity));
 		} finally {
 	        entityManager.close();
 		}
 	}
 
-//	private void withTx(EntityManager entityManager, Consumer<EntityManager> cons) {
-//       entityManager.getTransaction().begin();
-//       try {
-//           cons.accept(entityManager);
-//           entityManager.getTransaction().commit();
-//       } catch (RuntimeException re) {
-//           entityManager.getTransaction().rollback();
-//           throw re;
-//       }
-//	}
+    @Test
+    public void oneTx() throws Exception {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            TestEntityId id = new TestEntityId(UUID.randomUUID());
+            TestReferencedEntityId referencedId = new TestReferencedEntityId(UUID.randomUUID());
+            withTx(entityManager, em -> {
+                TestEntity entity = new TestEntity();
+                entity.setId(id);
+                em.persist(entity);
+                entity.setFoo("modified");
+                TestReferencedEntity referenced = new TestReferencedEntity();
+                referenced.setId(referencedId);
+                entity.setReferenced(referenced);
+                em.merge(entity);
+                return null;
+            });
+        } finally {
+            entityManager.close();
+        }
+    }
 
     private <T> T withTx(EntityManager entityManager, Function<EntityManager, T> func) {
         entityManager.getTransaction().begin();
